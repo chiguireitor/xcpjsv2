@@ -13,6 +13,7 @@
     "arc4": "^3.4.0",
     "axios": "^0.18.0",
     "bignumber.js": "^8.1.1",
+    "bitcoin-rpc-promise": "^2.1.6",
     "bitcoinjs-lib": "^4.0.3",
     "dotenv": "^7.0.0"
   },

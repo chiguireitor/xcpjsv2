@@ -1,6 +1,7 @@
 const bitcoin = require('bitcoinjs-lib')
 const rc4 = require('arc4')
 const OPS = require('bitcoin-ops')
+const xcputil = require('../xcputil')
 
 function op_push(len) {
   if (len < 0x4c) {
@@ -26,30 +27,27 @@ function op_push(len) {
 }
 
 function createChangeOutput(change, addr) {
-  let data = bitcoin.address.fromBase58Check(addr)
-  return {
-    value: change,
-    script: bitcoin.script.compile([
-      OPS.OP_DUP,
-      OPS.OP_HASH160,
-      data.hash,
-      OPS.OP_EQUALVERIFY,
-      OPS.OP_CHECKSIG
-    ])
-  }
+  return xcputil.createValueOutput(addr, change)
 }
 
-module.exports = async (data, utxoService) => {
+module.exports = async (data, utxoService, additionalOutputs) => {
   let cryptData = data
+  let additionalNeededValue = 0
+  let estimatedLength = cryptData.length + 3
+
+  if (additionalOutputs) {
+    estimatedLength += additionalOutputs.length * 32
+  }
 
   let coinSelect = await utxoService.findUtxos({
-    approximateByteLength: cryptData.length + 3
+    approximateByteLength: estimatedLength,
+    additionalNeededValue
   })
 
   if (coinSelect.utxos.length > 0) {
     let key = coinSelect.utxos[0].txId
 
-    let cipher = rc4('arc4', key)
+    let cipher = rc4('arc4', Buffer.from(key, 'hex'))
     cryptData = cipher.encodeBuffer(cryptData)
   } else {
     throw new Error('No utxos for transaction')
@@ -57,14 +55,21 @@ module.exports = async (data, utxoService) => {
 
   let outputs = [
     {
-      script: bitcoin.script.compile([
-        OPS.OP_RETURN,
+      script: Buffer.concat([
+        xcputil.doByteBuffer(OPS.OP_RETURN),
         op_push(cryptData.length),
         cryptData
       ]),
       value: 0
     }
   ]
+
+  if (additionalOutputs) {
+    additionalOutputs.forEach(out => {
+      outputs.push(out)
+      coinSelect.change -= out.value
+    })
+  }
 
   if (coinSelect.change > 0) {
     outputs.push(createChangeOutput(coinSelect.change, await utxoService.getChangeAddress()))

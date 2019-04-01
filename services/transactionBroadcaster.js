@@ -1,19 +1,18 @@
-const axios = require('axios')
+const BitcoinRpc = require('bitcoin-rpc-promise')
 
 module.exports = baseURL => {
-  const client = axios.create({ baseURL })
+  const btc = new BitcoinRpc(baseURL)
 
   let broadcaster = {
-    auth: (addr, token) => {
-
-    },
-
     broadcast: async txHex => {
-      let res = await client.post('/sendtx', {
-        data: { rawtx: txHex }
-      })
+      try {
+        let res = await btc.sendrawtransaction(txHex)
 
-      return res
+        return res
+      } catch (e) {
+        console.log(typeof e)
+        throw e
+      }
     }
   }
 

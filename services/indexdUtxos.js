@@ -44,7 +44,18 @@ module.exports = baseURL => {
             cachedUtxos = utxos.data
           }
 
-          if ('approximateByteLength' in ops && 'targetFeePerByte' in srcOps) {
+          if ('forceUtxo' in ops) {
+            let idx = cachedUtxos.indexOf(x => (x.txId === ops.txid) && (x.vout === ops.vout))
+
+            if (idx >= 0) {
+              let picked = [cachedUtxos[idx]]
+              cachedUtxos.splice(idx, 1)
+
+              return { utxos: picked, change: ops.forceUtxo.change}
+            } else {
+              throw new Error('UTXO not found')
+            }
+          } else if ('approximateByteLength' in ops && 'targetFeePerByte' in srcOps) {
             let {
               remainingUtxos,
               picked,

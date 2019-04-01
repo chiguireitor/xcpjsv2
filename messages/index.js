@@ -1,4 +1,5 @@
 module.exports = {
   send: require('./send'),
-  order: require('./order')
+  order: require('./order'),
+  issuance: require('./issuance')
 }

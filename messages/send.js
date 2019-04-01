@@ -5,11 +5,15 @@ module.exports = {
   compose: (asset, dest, amount, memo, memoIsHex) => {
     let memoBuffer = memo?Buffer.from(memo, memoIsHex?'hex':'utf8'):Buffer.alloc(0)
 
+    let assetBuff = xcputil.getAssetId(asset)
+    let amountBuff = xcputil.bn64be(amount)
+    let addressBuff = xcputil.addressShortDecode(dest)
+
     return Buffer.concat([
       ID,
-      xcputil.getAssetId(asset),
-      xcputil.bn64be(amount),
-      xcputil.addressShortDecode(dest),
+      assetBuff,
+      amountBuff,
+      addressBuff,
       memoBuffer
     ])
   }
