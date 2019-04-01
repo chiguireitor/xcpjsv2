@@ -1,0 +1,22 @@
+{
+  "name": "xcpjsv2",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "arc4": "^3.4.0",
+    "axios": "^0.18.0",
+    "bignumber.js": "^8.1.1",
+    "bitcoinjs-lib": "^4.0.3",
+    "dotenv": "^7.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.10"
+  }
+}
