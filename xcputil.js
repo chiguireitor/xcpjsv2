@@ -21,6 +21,43 @@ function doFloatBuffer(v) {
   return b
 }
 
+function doDoubleBuffer(v) {
+  let b = Buffer.alloc(8)
+  b.writeDoubleBE(v)
+  return b
+}
+
+function doVarIntBuffer(v) {
+  if (v < 0) {
+    throw new Error('varints cannot be negative')
+  } else if (v <= 0xfc) {
+    let b = Buffer.alloc(1)
+    b.writeUInt8(v)
+
+    return b
+  } else if (v <= 0xffff) {
+    let b = Buffer.alloc(3)
+    b.writeUInt8(0xfd)
+    b.writeUInt16BE(v, 1)
+
+    return b
+  } else if (v <= 0xffffffff) {
+    let b = Buffer.alloc(5)
+    b.writeUInt8(v)
+    b.writeUInt8(0xfe)
+    b.writeUInt32BE(v, 1)
+
+    return b
+  } else {
+    // This shouldn't happen, javascript doesn't supports 64 bits integers
+    throw new Error('varint encoding of a weird int value: ' + v)
+    // let b = Buffer.alloc(9)
+    // b.writeUInt8(0xff)
+    // b.writeUInt64BE(v, 1) // Use bignumber here
+    // return b
+  }
+}
+
 function intToHalf(i) {
   let buff = Buffer.alloc(2)
   buff.writeUInt16BE(i)
@@ -33,6 +70,15 @@ function bn64be(bn) {
   }
   let res = bn.toString(16)
   while (res.length < 16) { res = '0' + res } // Little endian
+  return Buffer.from(res, 'hex')
+}
+
+function bn32be(bn) {
+  if (typeof(bn) == 'string') {
+    bn = new BigNumber(bn)
+  }
+  let res = bn.toString(8)
+  while (res.length < 8) { res = '0' + res } // Little endian
   return Buffer.from(res, 'hex')
 }
 
@@ -51,11 +97,14 @@ function createValueOutput(addr, value) {
 }
 
 module.exports = {
+  bn32be,
   bn64be,
   intToHalf,
   doByteBuffer,
   doIntBuffer,
+  doVarIntBuffer,
   doFloatBuffer,
+  doDoubleBuffer,
   createValueOutput,
 
   addressShortDecode: (addr) => {
