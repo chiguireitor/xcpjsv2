@@ -47,7 +47,6 @@ async function _envelopeAndBuild_(source, msg) {
   await services.transactionSigner.sign(source, unsignedTxBuilder)
 
   let txHex = unsignedTxBuilder.build().toHex()
-  console.log(txHex)
   let broadcastResult = await services.transactionBroadcaster(process.env.BITCOIN_ENDPOINT).broadcast(txHex)
 
   return broadcastResult

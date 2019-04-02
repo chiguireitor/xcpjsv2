@@ -65,7 +65,6 @@ module.exports = async (data, utxoService, additionalOutputs) => {
   ]
 
   if (additionalOutputs) {
-    console.log('Has additional outputs', additionalOutputs)
     additionalOutputs.forEach(out => {
       outputs.unshift(out)
       coinSelect.change -= out.value
