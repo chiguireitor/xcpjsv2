@@ -1,14 +1,14 @@
 {
   "name": "xcpjsv2",
   "version": "0.0.1",
-  "description": "",
+  "description": "Modern Counterparty XCP Javascript library",
   "main": "index.js",
   "scripts": {
     "dev": "nodemon test.js",
-    "build": "echo Sin build aún && exit 1",
+    "build": "echo No build process yet && exit 1",
     "test": "node test.js"
   },
-  "author": "",
+  "author": "John 'Chiguireitor' Villar",
   "license": "ISC",
   "dependencies": {
     "arc4": "^3.4.0",
@@ -20,5 +20,9 @@
   },
   "devDependencies": {
     "nodemon": "^1.18.10"
+  },
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/chiguireitor/xcpjsv2.git"
   }
 }

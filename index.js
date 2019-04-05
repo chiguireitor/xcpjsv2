@@ -1,18 +1,11 @@
-require('dotenv').config()
-
 const bitcoin = require('bitcoinjs-lib')
 
 const messages = require('./messages')
 const envelopes = require('./envelopes')
 const services = require('./services')
-const {
-  indexdUtxos,
-  transactionBuilder,
-  transactionSigner,
-  transactionBroadcaster
-} = require('./services')
 
-const network = bitcoin.networks[process.env.NETWORK]
+let network = bitcoin.networks['mainnet']
+let utxoService, broadcastService
 
 async function send(source, destination, asset, quantity, memo, memoIsHex) {
   let msg = messages.send.compose(asset, destination, quantity, memo, memoIsHex)
@@ -35,24 +28,36 @@ async function broadcast(source, timestamp, value, feeFraction, text) {
 }
 
 async function _envelopeAndBuild_(source, msg) {
-  let utxoService = services.indexdUtxos(process.env.INDEXD_HTTP_ENDPOINT).forAddress(source, { targetFeePerByte: 1 })
+  let addrUtxoService = utxoService.forAddress(source, { targetFeePerByte: 1 })
   let additionalOutputs = null
   if (typeof(msg) === 'object' && !Buffer.isBuffer(msg)) {
     additionalOutputs = msg.outputs
     msg = msg.msgData
   }
-  let envelope = await envelopes.opreturn(msg, utxoService, additionalOutputs)
+  let envelope = await envelopes.opreturn(msg, addrUtxoService, additionalOutputs)
 
   let unsignedTxBuilder = await services.transactionBuilder(network, envelope, additionalOutputs)
   await services.transactionSigner.sign(source, unsignedTxBuilder)
 
   let txHex = unsignedTxBuilder.build().toHex()
-  let broadcastResult = await services.transactionBroadcaster(process.env.BITCOIN_ENDPOINT).broadcast(txHex)
+  let broadcastResult = await broadcastService.broadcast(txHex)
 
   return broadcastResult
 }
 
+function setNetwork(name) {
+  network = bitcoin.networks[name]
+}
+
+function setUtxoService(srv) {
+  utxoService = srv
+}
+
+function setBroadcastService(srv) {
+  broadcastService = srv
+}
+
 module.exports = {
-  services,
+  services, setNetwork, setUtxoService, setBroadcastService,
   send, order, issuance, broadcast
 }
