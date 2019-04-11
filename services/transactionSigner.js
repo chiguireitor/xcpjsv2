@@ -15,7 +15,8 @@ module.exports = {
     }
   },
 
-  wifKeyP2PKHSigner: (wif, network) => {
+  wifKeyP2PKHSigner: (wif, networkName) => {
+    const network = bitcoin.networks[networkName]
     const keyPair = bitcoin.ECPair.fromWIF(wif, network)
     const { address } = bitcoin.payments.p2pkh({ pubkey: keyPair.publicKey, network })
     registeredSigners[address] = async (tx) => {

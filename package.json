@@ -22,7 +22,7 @@
     "nodemon": "^1.18.10"
   },
   "repository": {
-    "type" : "git",
-    "url" : "https://github.com/chiguireitor/xcpjsv2.git"
+    "type": "git",
+    "url": "https://github.com/chiguireitor/xcpjsv2.git"
   }
 }
