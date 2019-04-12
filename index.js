@@ -28,7 +28,6 @@ async function broadcast(source, timestamp, value, feeFraction, text) {
 }
 
 async function _envelopeAndBuild_(source, msg) {
-  console.log(utxoService)
   let addrUtxoService = utxoService.forAddress(source, { targetFeePerByte: 1 })
   let additionalOutputs = null
   if (typeof(msg) === 'object' && !Buffer.isBuffer(msg)) {
