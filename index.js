@@ -28,18 +28,20 @@ async function broadcast(source, timestamp, value, feeFraction, text) {
 }
 
 async function _envelopeAndBuild_(source, msg) {
-  let addrUtxoService = utxoService.forAddress(source, { targetFeePerByte: 1 })
   let additionalOutputs = null
   if (typeof(msg) === 'object' && !Buffer.isBuffer(msg)) {
     additionalOutputs = msg.outputs
     msg = msg.msgData
   }
+
+  let addrUtxoService = utxoService.forAddress(source, { targetFeePerByte: 1 })
   let envelope = await envelopes.opreturn(msg, addrUtxoService, additionalOutputs)
 
   let unsignedTxBuilder = await services.transactionBuilder(network, envelope, additionalOutputs)
   await services.transactionSigner.sign(source, unsignedTxBuilder)
 
   let txHex = unsignedTxBuilder.build().toHex()
+  console.log(txHex)
   let broadcastResult = await broadcastService.broadcast(txHex)
 
   return broadcastResult

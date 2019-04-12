@@ -10,17 +10,17 @@ function op_push(len) {
     return b
   } else if (len <= 0xff) {
     let b = Buffer.alloc(2)
-    b.writeUInt8(0x4c, 1)
+    b.writeUInt8(0x4c, 0)
     b.writeUInt8(len, 1)
     return b
   } else if (len <= 0xffff) {
     let b = Buffer.alloc(3)
-    b.writeUInt8(0x4d, 1)
+    b.writeUInt8(0x4d, 0)
     b.writeUInt16LE(len, 1)
     return b
   } else {
     let b = Buffer.alloc(5)
-    b.writeUInt8(0x4e, 1)
+    b.writeUInt8(0x4e, 0)
     b.writeUInt32LE(len, 1)
     return b
   }
@@ -36,7 +36,7 @@ module.exports = async (data, utxoService, additionalOutputs) => {
   let estimatedLength = cryptData.length + 3
 
   if (additionalOutputs) {
-    estimatedLength += additionalOutputs.length * 32
+    estimatedLength += additionalOutputs.length * 32 + additionalOutputs.reduce((p,x) => p + x.value, 0)
   }
 
   let coinSelect = await utxoService.findUtxos({

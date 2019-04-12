@@ -2,8 +2,8 @@ const axios = require('axios')
 
 const BYTES_PER_USED_UTXO = 40
 
-function pickUtxosOldestFirst(utxos, len, feePerByte) {
-  let feeSats = Math.round(len * feePerByte)
+function pickUtxosOldestFirst(utxos, len, feePerByte, additionalNeededValue) {
+  let feeSats = Math.round(len * feePerByte) + additionalNeededValue
 
   let ordered = utxos.sort((a, b) => b.height - a.height)
   let picked = []
@@ -11,7 +11,8 @@ function pickUtxosOldestFirst(utxos, len, feePerByte) {
   while (ordered.length > 0 && feeSats > 0) {
     let utxo = ordered.pop()
 
-    if (utxo.value > feePerByte * BYTES_PER_USED_UTXO) {
+    //if (utxo.value > feePerByte * BYTES_PER_USED_UTXO) {
+    if (utxo.value > feePerByte * BYTES_PER_USED_UTXO && utxo.value > 5430 && ((utxo.coinbase == 0) || (utxo.coinbase == 1 && utxo.confirmations > 100))) {
       picked.push(utxo)
       feeSats -= utxo.value + feePerByte * BYTES_PER_USED_UTXO
     }
@@ -60,7 +61,7 @@ module.exports = baseURL => {
               remainingUtxos,
               picked,
               change
-            } = pickUtxosOldestFirst(cachedUtxos, ops.approximateByteLength, srcOps.targetFeePerByte)
+            } = pickUtxosOldestFirst(cachedUtxos, ops.approximateByteLength, srcOps.targetFeePerByte, ops.additionalNeededValue)
 
             cachedUtxos = remainingUtxos
             return { utxos: picked, change }
