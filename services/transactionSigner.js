@@ -8,10 +8,8 @@ module.exports = {
   },
 
   sign: async (src, tx) => {
-    if (src in registeredSigners) {
-      return await registeredSigners[src](tx)
-    } else {
-      return tx
+    for (src in registeredSigners) {
+        await registeredSigners[src](tx)
     }
   },
 
