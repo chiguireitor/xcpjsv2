@@ -1,6 +1,6 @@
 {
   "name": "xcpjsv2",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Modern Counterparty XCP Javascript library",
   "main": "index.js",
   "scripts": {
