@@ -1,7 +1,29 @@
 const bitcoin = require('bitcoinjs-lib')
-const rc4 = require('arc4')
 const OPS = require('bitcoin-ops')
 const xcputil = require('../xcputil')
+
+// arc4: from https://github.com/visvirial/CounterJS
+const arc4 = function(key, data) {
+	if(typeof key == 'string') key = Buffer.from(key, 'hex');
+	if(typeof data == 'string') data = Buffer.from(data, 'hex');
+	var S = [];
+	for(var i=0; i<256; i++) {
+		S[i] = i;
+	}
+	for(var i=0,j=0; i<256; i++) {
+		j = (j + S[i] + key[i % key.length]) % 256;
+		[S[i], S[j]] = [S[j], S[i]];
+	}
+	var ret = [];
+	for(var x=0,i=0,j=0; x<data.length; x++) {
+		i = (i + 1) % 256;
+		j = (j + S[i]) % 256;
+		[S[i], S[j]] = [S[j], S[i]];
+		var K = S[(S[i] + S[j]) % 256];
+		ret.push(data[x] ^ K);
+	}
+	return Buffer.from(ret);
+};
 
 function op_push(len) {
   if (len < 0x4c) {
@@ -47,8 +69,7 @@ module.exports = async (data, utxoService, additionalOutputs) => {
   if (coinSelect.utxos.length > 0) {
     let key = coinSelect.utxos[0].txId
 
-    let cipher = rc4('arc4', Buffer.from(key, 'hex'))
-    cryptData = cipher.encodeBuffer(cryptData)
+    cryptData = arc4(key, cryptData)
   } else {
     throw new Error('No utxos for transaction')
   }

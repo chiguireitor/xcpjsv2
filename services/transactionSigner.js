@@ -7,6 +7,10 @@ module.exports = {
     registeredSigners[addr] = fn
   },
 
+  unregisterSigner: (addr) => {
+    delete registeredSigners[addr]
+  },
+
   sign: async (src, tx) => {
     if (src in registeredSigners) {
       return await registeredSigners[src](tx)
