@@ -34,7 +34,7 @@ async function _envelopeAndBuild_(source, msg) {
     msg = msg.msgData
   }
 
-  let addrUtxoService = utxoService.forAddress(source, { targetFeePerByte: 2 })
+  let addrUtxoService = utxoService.forAddress(source, { targetFeePerByte: 10 })
   let envelope = await envelopes.opreturn(msg, addrUtxoService, additionalOutputs)
 
   let unsignedTxBuilder = await services.transactionBuilder(network, envelope, additionalOutputs)
