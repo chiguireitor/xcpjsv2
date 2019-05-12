@@ -55,7 +55,7 @@ async function _envelopeAndBuild_(source, msg, getraw) {
 
   let txHex = unsignedTxBuilder.build().toHex()
 
-  if (getrawtx) {
+  if (getraw) {
     console.log(txHex)
     return txHex
   } else {
