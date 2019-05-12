@@ -85,5 +85,7 @@ module.exports = {
   send,
   order,
   issuance,
-  broadcast
+  broadcast,
+  sendraw,
+  broadcastRawTx
 }
