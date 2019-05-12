@@ -84,15 +84,26 @@ function bn32be(bn) {
 
 function createValueOutput(addr, value) {
   let data = bitcoin.address.fromBase58Check(addr)
-  return {
-    value: value,
-    script: bitcoin.script.compile([
-      OPS.OP_DUP,
-      OPS.OP_HASH160,
-      data.hash,
-      OPS.OP_EQUALVERIFY,
-      OPS.OP_CHECKSIG
-    ])
+  if(data.version == bitcoin.networks.bitcoin.pubKeyHash || data.version == bitcoin.networks.regtest.pubKeyHash){
+    return {
+      value: value,
+      script: bitcoin.script.compile([
+        OPS.OP_DUP,
+        OPS.OP_HASH160,
+        data.hash,
+        OPS.OP_EQUALVERIFY,
+        OPS.OP_CHECKSIG
+      ])
+    }
+  } else if (data.version == bitcoin.networks.bitcoin.scriptHash || data.version == bitcoin.networks.regtest.scriptHash) {
+    return {
+      value: value,
+      script: bitcoin.script.compile([
+        OPS.OP_HASH160,
+        data.hash,
+        OPS.OP_EQUAL
+      ])
+    }
   }
 }
 
