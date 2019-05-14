@@ -92,5 +92,6 @@ module.exports = {
   issuance,
   broadcast,
   sendraw,
+  issuanceraw,
   broadcastRawTx
 }
