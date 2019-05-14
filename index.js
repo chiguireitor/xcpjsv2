@@ -58,16 +58,13 @@ async function _envelopeAndBuild_(source, msg, getraw) {
   let unsignedTxBuilder = await services.transactionBuilder(network, envelope, additionalOutputs)
   await services.transactionSigner.sign(source, unsignedTxBuilder)
 
-  let txHex = unsignedTxBuilder.build().toHex()
-
-  if (getraw) {
-    console.log(txHex)
-    return txHex
-  } else {
-    let broadcastResult = await broadcastService.broadcast(txHex)
-    return broadcastResult
+  if(getraw){
+    return unsignedTxBuilder.buildIncomplete().toHex()
   }
-
+  
+  let txHex = unsignedTxBuilder.build().toHex()
+  let broadcastResult = await broadcastService.broadcast(txHex)
+  return broadcastResult
 }
 
 function setNetwork(name) {
