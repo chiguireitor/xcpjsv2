@@ -23,6 +23,11 @@ async function order(source, giveAsset, giveQuantity, getAsset, getQuantity) {
   return _envelopeAndBuild_(source, msg, false)
 }
 
+async function issuanceraw(source, transferDestination, asset, quantity, divisible, description) {
+  let msg = messages.issuance.compose(source, transferDestination, asset, quantity, divisible, description)
+  return _envelopeAndBuild_(source, msg, true)
+}
+
 async function issuance(source, transferDestination, asset, quantity, divisible, description) {
   let msg = messages.issuance.compose(source, transferDestination, asset, quantity, divisible, description)
   return _envelopeAndBuild_(source, msg, false)
