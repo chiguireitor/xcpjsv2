@@ -118,6 +118,10 @@ module.exports = {
   getAssetId: (assetName) => {
     if (assetName.startsWith('A')) {
       throw new Error('Numeric assets not supported yet')
+    } else if (assetName === 'BTC') {
+      return Buffer.from('0000000000000000', 'hex')
+    } else if (assetName === 'XCP') {
+      return Buffer.from('0000000000000001', 'hex')
     } else {
       return bn64be(assetName.split('')
         .map(c => B26_DIGITS.indexOf(c))
