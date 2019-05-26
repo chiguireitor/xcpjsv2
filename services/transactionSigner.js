@@ -64,7 +64,7 @@ module.exports = {
     registeredSigners[keyPair.publicKey.toString("hex")] = async (tx) => {
       for (let i=0; i < tx.__inputs.length; i++) {
         try {
-          tx.sign(i, keyPair,p2sh.redeem.output)
+          tx.sign(i, keyPair,p2wsh.redeem.output)
         } catch(e) {
           console.log(e)
         }
