@@ -59,7 +59,7 @@ async function _envelopeAndBuild_(source, msg, getraw) {
   await services.transactionSigner.sign(source, unsignedTxBuilder)
 
   if(getraw){
-    return unsignedTxBuilder.buildIncomplete().toHex()
+    return [unsignedTxBuilder.buildIncomplete().toHex(),envelope.inputs]
   }
   
   let txHex = unsignedTxBuilder.build().toHex()
