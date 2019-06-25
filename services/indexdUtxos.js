@@ -19,7 +19,7 @@ async function pickRandomized(utxos, len, feePerByte, additionalNeededValue) {
       let p = buf.readUInt32LE()
       let rnd = () => {
         let v = p & 3
-        p = (p >>> 2) | (v <<< 30)
+        p = (p >>> 2) | (v << 30)
         return v - 1
       }
       let ordered = utxos.sort((a, b) => rnd())
