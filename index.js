@@ -6,6 +6,7 @@ const services = require('./services')
 
 let network = bitcoin.networks['mainnet']
 let utxoService, broadcastService
+let stochasticPick = false
 
 async function send(source, destination, asset, quantity, memo, memoIsHex) {
   let msg = messages.send.compose(asset, destination, quantity, memo, memoIsHex)
@@ -34,7 +35,7 @@ async function _envelopeAndBuild_(source, msg) {
     msg = msg.msgData
   }
 
-  let addrUtxoService = utxoService.forAddress(source, { targetFeePerByte: 1 })
+  let addrUtxoService = utxoService.forAddress(source, { targetFeePerByte: 1, stochasticPick })
   let envelope = await envelopes.opreturn(msg, addrUtxoService, additionalOutputs)
 
   let unsignedTxBuilder = await services.transactionBuilder(network, envelope, additionalOutputs)
@@ -64,7 +65,11 @@ function setBroadcastService(srv) {
   broadcastService = srv
 }
 
+function setStochasticPick(val) {
+  stochasticPick = val
+}
+
 module.exports = {
-  services, setNetwork, setUtxoService, setBroadcastService,
+  services, setNetwork, setUtxoService, setBroadcastService, setStochasticPick,
   send, order, issuance, broadcast
 }
