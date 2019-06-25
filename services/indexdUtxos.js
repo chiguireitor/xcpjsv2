@@ -24,7 +24,7 @@ async function pickRandomized(utxos, len, feePerByte, additionalNeededValue) {
       }
       let ordered = utxos.sort((a, b) => rnd())
 
-      return pickFromSet(ordered, len, feePerByte, additionalNeededValue)
+      resolve(pickFromSet(ordered, len, feePerByte, additionalNeededValue))
     })
   })
 }
