@@ -18,7 +18,7 @@ async function order(source, giveAsset, giveQuantity, getAsset, getQuantity) {
 }
 
 async function issuance(source, transferDestination, asset, quantity, divisible, description) {
-  let msg = messages.issuance.compose(source, transferDestination, asset, quantity, divisible, description)
+  let msg = messages.issuance.compose(source, transferDestination, asset, quantity, divisible, description, network)
   return _envelopeAndBuild_(source, msg)
 }
 
@@ -35,10 +35,9 @@ async function _envelopeAndBuild_(source, msg) {
   }
 
   let addrUtxoService = utxoService.forAddress(source, { targetFeePerByte: 1 })
-  let envelope = await envelopes.opreturn(msg, addrUtxoService, additionalOutputs)
-
+  let envelope = await envelopes.opreturn(msg, addrUtxoService, additionalOutputs, network)
   let unsignedTxBuilder = await services.transactionBuilder(network, envelope, additionalOutputs)
-  let rawTx = await services.transactionSigner.sign(source, unsignedTxBuilder)
+  let rawTx = await services.transactionSigner.sign(source, unsignedTxBuilder, envelope.inputs)
 
   if (typeof(rawTx) === 'string') {
     let broadcastResult = await broadcastService.broadcast(rawTx)
@@ -46,6 +45,7 @@ async function _envelopeAndBuild_(source, msg) {
     return broadcastResult
   } else {
     let txHex = unsignedTxBuilder.build().toHex()
+    console.log(txHex)
     let broadcastResult = await broadcastService.broadcast(txHex)
 
     return broadcastResult

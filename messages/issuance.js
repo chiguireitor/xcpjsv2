@@ -2,7 +2,7 @@ const xcputil = require('../xcputil.js')
 const ID = Buffer.from('14', 'hex')
 
 module.exports = {
-  compose: (source, transferDestination, asset, quantity, divisible, description) => {
+  compose: (source, transferDestination, asset, quantity, divisible, description, network) => {
     let assetId = xcputil.getAssetId(asset)
     let quantityBuff = xcputil.bn64be(quantity)
 
@@ -30,7 +30,7 @@ module.exports = {
 
     if (transferDestination) {
       result.outputs = [
-        xcputil.createValueOutput(transferDestination, 5430)
+        xcputil.createValueOutput(transferDestination, 5430, network)
       ]
     }
 

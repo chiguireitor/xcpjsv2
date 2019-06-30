@@ -82,17 +82,18 @@ function bn32be(bn) {
   return Buffer.from(res, 'hex')
 }
 
-function createValueOutput(addr, value) {
+function createValueOutput(addr, value, network) {
   let data = bitcoin.address.fromBase58Check(addr)
   return {
     value: value,
-    script: bitcoin.script.compile([
+    script: bitcoin.address.toOutputScript(addr, network)
+    /*bitcoin.script.compile([
       OPS.OP_DUP,
       OPS.OP_HASH160,
       data.hash,
       OPS.OP_EQUALVERIFY,
       OPS.OP_CHECKSIG
-    ])
+    ])*/
   }
 }
 
@@ -117,7 +118,9 @@ module.exports = {
 
   getAssetId: (assetName) => {
     if (assetName.startsWith('A')) {
-      throw new Error('Numeric assets not supported yet')
+      let bn = new BigNumber(assetName.slice(1))
+
+      return bn64be(bn)
     } else {
       return bn64be(assetName.split('')
         .map(c => B26_DIGITS.indexOf(c))
