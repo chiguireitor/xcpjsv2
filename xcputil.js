@@ -3,6 +3,14 @@ const OPS = require('bitcoin-ops')
 const BigNumber = require('bignumber.js')
 const B26_DIGITS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
+
+let hn = { messagePrefix: '\u0018Bitcoin Signed Message:\n',
+  bech32: 'tb',
+  bip32: { public: 70617039, private: 70615956 },
+  pubKeyHash: 100,
+  scriptHash: 40,
+  wif: 239 }
+
 function doByteBuffer(v) {
   let b = Buffer.alloc(1)
   b.writeUInt8(v)
@@ -84,7 +92,7 @@ function bn32be(bn) {
 
 function createValueOutput(addr, value) {
   let data = bitcoin.address.fromBase58Check(addr)
-  if(data.version == bitcoin.networks.bitcoin.pubKeyHash || data.version == bitcoin.networks.regtest.pubKeyHash){
+  if(data.version == hn.pubKeyHash){
     return {
       value: value,
       script: bitcoin.script.compile([
@@ -95,7 +103,7 @@ function createValueOutput(addr, value) {
         OPS.OP_CHECKSIG
       ])
     }
-  } else if (data.version == bitcoin.networks.bitcoin.scriptHash || data.version == bitcoin.networks.regtest.scriptHash) {
+  } else if (data.version == hn.scriptHash) {
     return {
       value: value,
       script: bitcoin.script.compile([
