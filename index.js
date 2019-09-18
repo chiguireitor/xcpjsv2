@@ -4,7 +4,13 @@ const messages = require('./messages')
 const envelopes = require('./envelopes')
 const services = require('./services')
 
-let network = bitcoin.networks['mainnet']
+let network = { messagePrefix: '\u0018Bitcoin Signed Message:\n',
+  bech32: 'tb',
+  bip32: { public: 70617039, private: 70615956 },
+  pubKeyHash: 100,
+  scriptHash: 40,
+  wif: 239 }
+
 let utxoService, broadcastService
 
 
