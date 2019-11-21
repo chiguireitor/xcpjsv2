@@ -69,7 +69,7 @@ module.exports = (baseURL, filter) => {
               const d = filter['deterministic']
               for (var i = 0; i < utxos.data.length; i++) {
                 const ds = deterministicSelect(utxos.data[i].txId,filter['deterministic'])
-                console.log("ds is ",ds,"deterministicTarget is", deterministicTarget)
+                console.log("ds is ",ds,"deterministicTarget is", filter['deterministicTarget'])
                 if (ds == filter['deterministicTarget']){
                   utxodata.push(utxos.data[i])
                 }
