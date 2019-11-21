@@ -29,7 +29,7 @@ async function order(source, giveAsset, giveQuantity, getAsset, getQuantity) {
   return _envelopeAndBuild_(source, msg, false)
 }
 
-async function issuanceraw(source, transferDestination, asset, quantity, divisible, description,utxos) {
+async function issuanceraw(source, transferDestination, asset, quantity, divisible, description, coinSelect) {
   let msg = messages.issuance.compose(source, transferDestination, asset, quantity, divisible, description)
   return _envelopeAndBuild_(source, msg, true, utxos)
 }
@@ -49,7 +49,7 @@ async function broadcastRawTx(tx){
   return broadcastResult
 }
 
-async function _envelopeAndBuild_(source, msg, getraw,utxos) {
+async function _envelopeAndBuild_(source, msg, getraw,coinSelect) {
   let additionalOutputs = null
   if (typeof(msg) === 'object' && !Buffer.isBuffer(msg)) {
     additionalOutputs = msg.outputs
@@ -59,13 +59,13 @@ async function _envelopeAndBuild_(source, msg, getraw,utxos) {
   let addrUtxoService = utxoService.forAddress(source, {
     targetFeePerByte: 10
   })
-  let envelope = await envelopes.opreturn(msg, addrUtxoService, additionalOutputs,utxos)
+  let envelope = await envelopes.opreturn(msg, addrUtxoService, additionalOutputs, coinSelect)
 
   let unsignedTxBuilder = await services.transactionBuilder(network, envelope, additionalOutputs)
   await services.transactionSigner.sign(source, unsignedTxBuilder)
 
   if(getraw){
-    return [unsignedTxBuilder.buildIncomplete().toHex(),envelope.inputs]
+    return [unsignedTxBuilder.buildIncomplete().toHex(),envelope.coinSelect]
   }
 
   let txHex = unsignedTxBuilder.build().toHex()
