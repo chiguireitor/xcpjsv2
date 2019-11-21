@@ -14,9 +14,9 @@ let network = { messagePrefix: '\u0018Bitcoin Signed Message:\n',
 let utxoService, broadcastService
 
 
-async function sendraw(source, destination, asset, quantity, memo, memoIsHex,utxos) {
+async function sendraw(source, destination, asset, quantity, memo, memoIsHex, coinSelect) {
   let msg = messages.send.compose(asset, destination, quantity, memo, memoIsHex)
-  return _envelopeAndBuild_(source, msg, true,utxos)
+  return _envelopeAndBuild_(source, msg, true, coinSelect)
 }
 
 async function send(source, destination, asset, quantity, memo, memoIsHex) {

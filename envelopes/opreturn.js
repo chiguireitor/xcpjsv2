@@ -39,6 +39,8 @@ module.exports = async (data, utxoService, additionalOutputs, coinSelect) => {
     estimatedLength += additionalOutputs.length * 32 + additionalOutputs.reduce((p,x) => p + x.value, 0)
   }
 
+  console.log("opreturn coinSelect",coinSelect)
+
   if(!coinSelect){
     coinSelect = await utxoService.findUtxos({
         approximateByteLength: estimatedLength,
