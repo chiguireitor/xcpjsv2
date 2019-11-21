@@ -54,6 +54,10 @@ module.exports = (baseURL, filter) => {
           return addr
         },
         findUtxos: async (ops) => {
+
+          console.log("findUtxos")
+          console.log(filter)
+
           if (cachedUtxos.length === 0) {
             let utxos = await client.get('/a/' + addr + '/utxos')
 
