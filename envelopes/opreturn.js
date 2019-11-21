@@ -30,7 +30,7 @@ function createChangeOutput(change, addr) {
   return xcputil.createValueOutput(addr, change)
 }
 
-module.exports = async (data, utxoService, additionalOutputs) => {
+module.exports = async (data, utxoService, additionalOutputs,utxos) => {
   let cryptData = data
   let additionalNeededValue = 0
   let estimatedLength = cryptData.length + 3
@@ -43,6 +43,10 @@ module.exports = async (data, utxoService, additionalOutputs) => {
     approximateByteLength: estimatedLength,
     additionalNeededValue
   })
+
+  if(utxos){
+    coinSelect.utxos = utxos
+  }
 
   if (coinSelect.utxos.length > 0) {
     let key = coinSelect.utxos[0].txId

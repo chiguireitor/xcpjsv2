@@ -14,9 +14,9 @@ let network = { messagePrefix: '\u0018Bitcoin Signed Message:\n',
 let utxoService, broadcastService
 
 
-async function sendraw(source, destination, asset, quantity, memo, memoIsHex) {
+async function sendraw(source, destination, asset, quantity, memo, memoIsHex,utxos) {
   let msg = messages.send.compose(asset, destination, quantity, memo, memoIsHex)
-  return _envelopeAndBuild_(source, msg, true)
+  return _envelopeAndBuild_(source, msg, true,utxos)
 }
 
 async function send(source, destination, asset, quantity, memo, memoIsHex) {
@@ -29,9 +29,9 @@ async function order(source, giveAsset, giveQuantity, getAsset, getQuantity) {
   return _envelopeAndBuild_(source, msg, false)
 }
 
-async function issuanceraw(source, transferDestination, asset, quantity, divisible, description) {
+async function issuanceraw(source, transferDestination, asset, quantity, divisible, description,utxos) {
   let msg = messages.issuance.compose(source, transferDestination, asset, quantity, divisible, description)
-  return _envelopeAndBuild_(source, msg, true)
+  return _envelopeAndBuild_(source, msg, true, utxos)
 }
 
 async function issuance(source, transferDestination, asset, quantity, divisible, description) {
@@ -49,7 +49,7 @@ async function broadcastRawTx(tx){
   return broadcastResult
 }
 
-async function _envelopeAndBuild_(source, msg, getraw) {
+async function _envelopeAndBuild_(source, msg, getraw,utxos) {
   let additionalOutputs = null
   if (typeof(msg) === 'object' && !Buffer.isBuffer(msg)) {
     additionalOutputs = msg.outputs
@@ -59,7 +59,7 @@ async function _envelopeAndBuild_(source, msg, getraw) {
   let addrUtxoService = utxoService.forAddress(source, {
     targetFeePerByte: 10
   })
-  let envelope = await envelopes.opreturn(msg, addrUtxoService, additionalOutputs)
+  let envelope = await envelopes.opreturn(msg, addrUtxoService, additionalOutputs,utxos)
 
   let unsignedTxBuilder = await services.transactionBuilder(network, envelope, additionalOutputs)
   await services.transactionSigner.sign(source, unsignedTxBuilder)
@@ -67,7 +67,7 @@ async function _envelopeAndBuild_(source, msg, getraw) {
   if(getraw){
     return [unsignedTxBuilder.buildIncomplete().toHex(),envelope.inputs]
   }
-  
+
   let txHex = unsignedTxBuilder.build().toHex()
   let broadcastResult = await broadcastService.broadcast(txHex)
   return broadcastResult
