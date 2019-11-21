@@ -60,7 +60,7 @@ async function _envelopeAndBuild_(source, msg, getraw,coinSelect) {
     targetFeePerByte: 10
   })
   let envelope = await envelopes.opreturn(msg, addrUtxoService, additionalOutputs, coinSelect)
-
+  envelope.inputs = coinSelect.utxos
   let unsignedTxBuilder = await services.transactionBuilder(network, envelope, additionalOutputs)
   await services.transactionSigner.sign(source, unsignedTxBuilder)
 
