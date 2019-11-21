@@ -31,6 +31,9 @@ function createChangeOutput(change, addr) {
 }
 
 module.exports = async (data, utxoService, additionalOutputs, cs) => {
+
+  console.log("opreturn params", data, utxoService, additionalOutputs, cs)
+
   let cryptData = data
   let additionalNeededValue = 0
   let estimatedLength = cryptData.length + 3
@@ -39,7 +42,7 @@ module.exports = async (data, utxoService, additionalOutputs, cs) => {
     estimatedLength += additionalOutputs.length * 32 + additionalOutputs.reduce((p,x) => p + x.value, 0)
   }
 
-  console.log("opreturn coinSelect",cs)
+  console.log("opreturn cs",cs)
   let coinSelect = null
   if(!cs){
     coinSelect = await utxoService.findUtxos({

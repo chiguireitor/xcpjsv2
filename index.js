@@ -51,7 +51,7 @@ async function broadcastRawTx(tx){
   return broadcastResult
 }
 
-async function _envelopeAndBuild_(source, msg, getraw, coinSelect) {
+async function _envelopeAndBuild_(source, msg, getraw, cs) {
   let additionalOutputs = null
   if (typeof(msg) === 'object' && !Buffer.isBuffer(msg)) {
     additionalOutputs = msg.outputs
@@ -62,8 +62,10 @@ async function _envelopeAndBuild_(source, msg, getraw, coinSelect) {
     targetFeePerByte: 10
   })
 
-  console.log("this is _envelopeAndBuild_ coinSelect", coinSelect)
+  let coinSelect = cs
 
+  console.log("this is _envelopeAndBuild_ cs", coinSelect)
+  console.log("pre opreturn params", msg, addrUtxoService, additionalOutputs, coinSelect)
   let envelope = await envelopes.opreturn(msg, addrUtxoService, additionalOutputs, coinSelect)
   envelope.inputs = envelope.coinSelect.utxos
   let unsignedTxBuilder = await services.transactionBuilder(network, envelope, additionalOutputs)
