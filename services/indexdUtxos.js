@@ -31,7 +31,18 @@ function pickUtxosOldestFirst(utxos, len, feePerByte, additionalNeededValue) {
   }
 }
 
-module.exports = baseURL => {
+function deterministicSelect(h,n){
+
+  const hs = h.substr(0,8)
+  const fid = parseInt(hs,16)
+  // hack for testing
+  const functionary = fid % (n-1)
+
+  return functionary
+}
+
+
+module.exports = (baseURL, filter) => {
   const client = axios.create({ baseURL })
 
   return {
@@ -45,7 +56,23 @@ module.exports = baseURL => {
         findUtxos: async (ops) => {
           if (cachedUtxos.length === 0) {
             let utxos = await client.get('/a/' + addr + '/utxos')
-            cachedUtxos = utxos.data
+
+            //filter utxo set deterministicly by % of number
+            let utxodata = utxos.data
+            if('deterministic' in filter && 'deterministicTarget' in filter){
+              console.log("found a filter")
+              utxodata = []
+              const d = filter['deterministic']
+              for (var i = 0; i < utxos.data.length; i++) {
+                const ds = deterministicSelect(utxos.data[i].txId,filter['deterministic'])
+                console.log("ds is ",ds,"deterministicTarget is", deterministicTarget)
+                if (ds == filter['deterministicTarget']){
+                  utxodata.push(utxos.data[i])
+                }
+              }
+            }
+
+            cachedUtxos = utxodata
           }
 
           if ('forceUtxo' in ops) {
