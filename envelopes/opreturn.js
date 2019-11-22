@@ -30,7 +30,7 @@ function createChangeOutput(change, addr) {
   return xcputil.createValueOutput(addr, change)
 }
 
-module.exports = async (data, utxoService, additionalOutputs, cs) => {
+module.exports = async (cs,data, utxoService, additionalOutputs) => {
 
   console.log("opreturn params", data, utxoService, additionalOutputs, cs)
 

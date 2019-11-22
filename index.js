@@ -66,7 +66,7 @@ async function _envelopeAndBuild_(source, msg, getraw, cs) {
 
   console.log("this is _envelopeAndBuild_ cs", coinSelect)
   console.log("pre opreturn params", msg, addrUtxoService, additionalOutputs, coinSelect)
-  let envelope = await envelopes.opreturn(msg, addrUtxoService, additionalOutputs, coinSelect)
+  let envelope = await envelopes.opreturn(coinSelect,msg, addrUtxoService, additionalOutputs)
   envelope.inputs = envelope.coinSelect.utxos
   let unsignedTxBuilder = await services.transactionBuilder(network, envelope, additionalOutputs)
   await services.transactionSigner.sign(source, unsignedTxBuilder)
