@@ -30,9 +30,9 @@ async function order(source, giveAsset, giveQuantity, getAsset, getQuantity) {
 }
 
 async function issuanceraw(source, transferDestination, asset, quantity, divisible, description, coinSelect) {
-  console.log("this is issuanceraw coinSelect", coinSelect)
+  //console.log("this is issuanceraw coinSelect", coinSelect)
   let msg = messages.issuance.compose(source, transferDestination, asset, quantity, divisible, description)
-  console.log("this is issuanceraw coinSelect", coinSelect)
+  //console.log("this is issuanceraw coinSelect", coinSelect)
   return _envelopeAndBuild_(source, msg, true, coinSelect)
 }
 
@@ -64,8 +64,8 @@ async function _envelopeAndBuild_(source, msg, getraw, cs) {
 
   let coinSelect = cs
 
-  console.log("this is _envelopeAndBuild_ cs", coinSelect)
-  console.log("pre opreturn params", msg, addrUtxoService, additionalOutputs, coinSelect)
+  //console.log("this is _envelopeAndBuild_ cs", coinSelect)
+  //console.log("pre opreturn params", msg, addrUtxoService, additionalOutputs, coinSelect)
   let envelope = await envelopes.opreturn(msg, addrUtxoService, additionalOutputs, coinSelect)
   envelope.inputs = envelope.coinSelect.utxos
   let unsignedTxBuilder = await services.transactionBuilder(network, envelope, additionalOutputs)
