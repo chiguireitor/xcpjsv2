@@ -48,9 +48,11 @@ module.exports = (baseURL, filter) => {
   return {
     forAddress: (addr, srcOps) => {
 
-      if(!addr in utxoCache){
+      if(!utxoCache[addr]){
         utxoCache[addr] = []
       }
+
+      console.log('set utxo cache for ',addr,utxoCache)
 
       return {
         getChangeAddress: async () => {
@@ -58,8 +60,10 @@ module.exports = (baseURL, filter) => {
         },
         findUtxos: async (ops) => {
 
-          //console.log("findUtxos")
+          console.log("findUtxos")
           //console.log(filter)
+
+          console.log('utxoCache',utxoCache)
 
           if (utxoCache[addr].length === 0) {
             console.log('utxoCache[addr] is 0 !!!!')
