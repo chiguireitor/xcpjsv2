@@ -59,6 +59,7 @@ module.exports = (baseURL, filter) => {
           //console.log(filter)
 
           if (cachedUtxos.length === 0) {
+            console.log('cachedUtxos is 0 !!!!')
             let utxos = await client.get('/a/' + addr + '/utxos')
 
             //filter utxo set deterministicly by % of number
