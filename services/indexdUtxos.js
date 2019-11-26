@@ -52,23 +52,14 @@ module.exports = (baseURL, filter) => {
         utxoCache[addr] = []
       }
 
-      console.log('set utxo cache for ',addr,utxoCache)
-
       return {
         getChangeAddress: async () => {
           return addr
         },
         findUtxos: async (ops) => {
 
-          console.log("findUtxos")
-          //console.log(filter)
-
-          console.log('utxoCache',utxoCache)
-
           if (utxoCache[addr].length === 0) {
-            console.log('utxoCache[addr] is 0 !!!!')
             let utxos = await client.get('/a/' + addr + '/utxos')
-
             //filter utxo set deterministicly by % of number
             let utxodata = utxos.data
             if('deterministic' in filter && 'deterministicTarget' in filter){
@@ -84,8 +75,6 @@ module.exports = (baseURL, filter) => {
             }
 
             utxoCache[addr] = utxodata
-
-            console.log('cached utxos set ',utxoCache[addr].length)
           }
 
           if ('forceUtxo' in ops) {
@@ -107,7 +96,6 @@ module.exports = (baseURL, filter) => {
             } = pickUtxosOldestFirst(utxoCache[addr], ops.approximateByteLength, srcOps.targetFeePerByte, ops.additionalNeededValue)
 
             utxoCache[addr] = remainingUtxos
-            console.log('cached utxos set remaining',utxoCache[addr].length)
             return { utxos: picked, change }
           } else {
             return [utxoCache[addr].shift()]
