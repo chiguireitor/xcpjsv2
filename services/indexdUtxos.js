@@ -44,10 +44,13 @@ function deterministicSelect(h,n){
 
 module.exports = (baseURL, filter) => {
   const client = axios.create({ baseURL })
-
+  const utxoCache = {}
   return {
     forAddress: (addr, srcOps) => {
-      let cachedUtxos = []
+
+      if(!addr in utxoCache){
+        utxoCache[addr] = []
+      }
 
       return {
         getChangeAddress: async () => {
@@ -58,8 +61,8 @@ module.exports = (baseURL, filter) => {
           //console.log("findUtxos")
           //console.log(filter)
 
-          if (cachedUtxos.length === 0) {
-            console.log('cachedUtxos is 0 !!!!')
+          if (utxoCache[addr].length === 0) {
+            console.log('utxoCache[addr] is 0 !!!!')
             let utxos = await client.get('/a/' + addr + '/utxos')
 
             //filter utxo set deterministicly by % of number
@@ -76,17 +79,17 @@ module.exports = (baseURL, filter) => {
               }
             }
 
-            cachedUtxos = utxodata
+            utxoCache[addr] = utxodata
 
-            console.log('cached utxos set ',cachedUtxos.length)
+            console.log('cached utxos set ',utxoCache[addr].length)
           }
 
           if ('forceUtxo' in ops) {
-            let idx = cachedUtxos.indexOf(x => (x.txId === ops.txid) && (x.vout === ops.vout))
+            let idx = utxoCache[addr].indexOf(x => (x.txId === ops.txid) && (x.vout === ops.vout))
 
             if (idx >= 0) {
-              let picked = [cachedUtxos[idx]]
-              cachedUtxos.splice(idx, 1)
+              let picked = [utxoCache[addr][idx]]
+              utxoCache[addr].splice(idx, 1)
 
               return { utxos: picked, change: ops.forceUtxo.change}
             } else {
@@ -97,13 +100,13 @@ module.exports = (baseURL, filter) => {
               remainingUtxos,
               picked,
               change
-            } = pickUtxosOldestFirst(cachedUtxos, ops.approximateByteLength, srcOps.targetFeePerByte, ops.additionalNeededValue)
+            } = pickUtxosOldestFirst(utxoCache[addr], ops.approximateByteLength, srcOps.targetFeePerByte, ops.additionalNeededValue)
 
-            cachedUtxos = remainingUtxos
-            console.log('cached utxos set remaining',cachedUtxos.length)
+            utxoCache[addr] = remainingUtxos
+            console.log('cached utxos set remaining',utxoCache[addr].length)
             return { utxos: picked, change }
           } else {
-            return [cachedUtxos.shift()]
+            return [utxoCache[addr].shift()]
           }
         }
       }
