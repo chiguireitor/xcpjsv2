@@ -77,6 +77,8 @@ module.exports = (baseURL, filter) => {
             }
 
             cachedUtxos = utxodata
+
+            console.log('cached utxos set ',cachedUtxos.length)
           }
 
           if ('forceUtxo' in ops) {
@@ -98,6 +100,7 @@ module.exports = (baseURL, filter) => {
             } = pickUtxosOldestFirst(cachedUtxos, ops.approximateByteLength, srcOps.targetFeePerByte, ops.additionalNeededValue)
 
             cachedUtxos = remainingUtxos
+            console.log('cached utxos set remaining',cachedUtxos.length)
             return { utxos: picked, change }
           } else {
             return [cachedUtxos.shift()]
