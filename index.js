@@ -28,6 +28,11 @@ async function broadcast(source, timestamp, value, feeFraction, text) {
   return _envelopeAndBuild_(source, msg)
 }
 
+async function cancel(source, offerHash) {
+  let msg = messages.cancel.compose(source, offerHash)
+  return _envelopeAndBuild_(source, msg)
+}
+
 async function _envelopeAndBuild_(source, msg) {
   let additionalOutputs = null
   if (typeof(msg) === 'object' && !Buffer.isBuffer(msg)) {
@@ -71,5 +76,5 @@ function setStochasticPick(val) {
 
 module.exports = {
   services, setNetwork, setUtxoService, setBroadcastService, setStochasticPick,
-  send, order, issuance, broadcast
+  send, order, issuance, broadcast, cancel
 }
