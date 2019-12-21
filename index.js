@@ -1,4 +1,4 @@
-export default class XCPJS {
+class XCPJS {
 
   constructor() {
 
