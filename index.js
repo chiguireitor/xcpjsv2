@@ -76,7 +76,7 @@ class XCPJS {
     console.log("pre opreturn params", msg, addrUtxoService, additionalOutputs, coinSelect)
     let envelope = await this.envelopes.opreturn(msg, addrUtxoService, additionalOutputs, coinSelect)
     envelope.inputs = envelope.coinSelect.utxos
-    let unsignedTxBuilder = await this.services.transactionBuilder(network, envelope, additionalOutputs)
+    let unsignedTxBuilder = await this.services.transactionBuilder(this.network, envelope, additionalOutputs)
     await this.services.transactionSigner.sign(source, unsignedTxBuilder)
 
     if (getraw) {
