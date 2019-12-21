@@ -1,4 +1,4 @@
-class xcpjsv2 {
+class XCPJS {
 
   constructor() {
 
