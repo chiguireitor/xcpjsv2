@@ -59,11 +59,13 @@ module.exports = (baseURL, filter) => {
         findUtxos: async (ops) => {
 
           if (utxoCache[addr].length === 0) {
+            console.log("calling ",'/a/' + addr + '/utxos')
             let utxos = await client.get('/a/' + addr + '/utxos')
             //filter utxo set deterministicly by % of number
+            console.log('got utxos', utxos)
             let utxodata = utxos.data
             if('deterministic' in filter && 'deterministicTarget' in filter){
-              //console.log("found a filter")
+              console.log("found a filter")
               utxodata = []
               const d = filter['deterministic']
               for (var i = 0; i < utxos.data.length; i++) {

@@ -45,6 +45,7 @@ module.exports = async (data, utxoService, additionalOutputs, cs) => {
   //console.log("opreturn cs",cs)
   let coinSelect = null
   if(!cs){
+    console.log('calling findUtxos')
     coinSelect = await utxoService.findUtxos({
         approximateByteLength: estimatedLength,
         additionalNeededValue
