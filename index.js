@@ -1,7 +1,9 @@
-function initialize() {
+(function()
+{
+
+  var exports = module.exports = {};
 
   const bitcoin = require('bitcoinjs-lib')
-
   const messages = require('./messages')
   const envelopes = require('./envelopes')
   const services = require('./services')
@@ -20,45 +22,44 @@ function initialize() {
 
   let utxoService, broadcastService
 
-
-  async function sendraw(source, destination, asset, quantity, memo, memoIsHex, coinSelect) {
+  exports.sendraw = async function(source, destination, asset, quantity, memo, memoIsHex, coinSelect) {
     let msg = messages.send.compose(asset, destination, quantity, memo, memoIsHex)
     return _envelopeAndBuild_(source, msg, true, coinSelect)
   }
 
-  async function send(source, destination, asset, quantity, memo, memoIsHex) {
+  exports.send = async function(source, destination, asset, quantity, memo, memoIsHex) {
     let msg = messages.send.compose(asset, destination, quantity, memo, memoIsHex)
     return _envelopeAndBuild_(source, msg, false)
   }
 
-  async function order(source, giveAsset, giveQuantity, getAsset, getQuantity) {
+  exports.order = async function (source, giveAsset, giveQuantity, getAsset, getQuantity) {
     let msg = messages.order.compose(source, giveAsset, giveQuantity, getAsset, getQuantity)
     return _envelopeAndBuild_(source, msg, false)
   }
 
-  async function issuanceraw(source, transferDestination, asset, quantity, divisible, description, coinSelect) {
+  exports.issuanceraw = async function (source, transferDestination, asset, quantity, divisible, description, coinSelect) {
     console.log("this is issuanceraw coinSelect", coinSelect)
     let msg = messages.issuance.compose(source, transferDestination, asset, quantity, divisible, description)
     console.log("this is issuanceraw coinSelect", coinSelect)
     return _envelopeAndBuild_(source, msg, true, coinSelect)
   }
 
-  async function issuance(source, transferDestination, asset, quantity, divisible, description) {
+  exports.issuance = async function (source, transferDestination, asset, quantity, divisible, description) {
     let msg = messages.issuance.compose(source, transferDestination, asset, quantity, divisible, description)
     return _envelopeAndBuild_(source, msg, false)
   }
 
-  async function broadcast(source, timestamp, value, feeFraction, text) {
+  exports.broadcast = async function (source, timestamp, value, feeFraction, text) {
     let msg = messages.broadcast.compose(source, timestamp, value, feeFraction, text)
     return _envelopeAndBuild_(source, msg, false)
   }
 
-  async function broadcastRawTx(tx) {
+  exports.broadcastRawTx = async function (tx) {
     let broadcastResult = await broadcastService.broadcast(tx)
     return broadcastResult
   }
 
-  async function _envelopeAndBuild_(source, msg, getraw, cs) {
+  exports._envelopeAndBuild_ = async function (source, msg, getraw, cs) {
     let additionalOutputs = null
     if (typeof(msg) === 'object' && !Buffer.isBuffer(msg)) {
       additionalOutputs = msg.outputs
@@ -87,15 +88,15 @@ function initialize() {
     return broadcastResult
   }
 
-  function setNetwork(name) {
+  exports.setNetwork = function (name) {
     network = bitcoin.networks[name]
   }
 
-  function setUtxoService(srv) {
+  exports.setUtxoService = function (srv) {
     utxoService = srv
   }
 
-  function setBroadcastService(srv) {
+  exports.setBroadcastService = function (srv) {
     broadcastService = srv
   }
 
@@ -113,6 +114,5 @@ function initialize() {
   //   broadcastRawTx
   // }
 
-  return this;
-}
-module.exports = initialize;
+
+})();
