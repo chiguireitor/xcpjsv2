@@ -22,8 +22,6 @@ class XCPJS {
 
   }
 
-
-
   async sendraw(source, destination, asset, quantity, memo, memoIsHex, coinSelect) {
     let msg = this.messages.send.compose(asset, destination, quantity, memo, memoIsHex)
     return this._envelopeAndBuild_(source, msg, true, coinSelect)
@@ -117,3 +115,5 @@ class XCPJS {
   // }
 
 }
+
+module.exports = XCPJS
