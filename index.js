@@ -114,5 +114,6 @@
   //   broadcastRawTx
   // }
 
+  return exports;
 
 })();
