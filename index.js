@@ -91,8 +91,8 @@ class XCPJS {
     return broadcastResult
   }
 
-   setNetwork(name) {
-    this.network = this.bitcoin.networks[name]
+   setNetwork(network) {
+    this.network = network
   }
 
    setUtxoService(srv) {
