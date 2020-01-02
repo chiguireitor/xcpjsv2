@@ -74,11 +74,12 @@ class XCPJS {
 
     console.log("this is _envelopeAndBuild_ cs", coinSelect)
     console.log("pre opreturn params", msg, addrUtxoService, additionalOutputs, coinSelect)
+    console.log('this.network',this.network)
     let envelope = await this.envelopes.opreturn(msg, addrUtxoService, additionalOutputs, coinSelect, this.network)
     console.log('envelope',envelope)
     envelope.inputs = envelope.coinSelect.utxos
     console.log('envelope.inputs',envelope.inputs)
-    console.log('this.network',this.network)
+
     let unsignedTxBuilder = await this.services.transactionBuilder(this.network, envelope, additionalOutputs)
     await this.services.transactionSigner.sign(source, unsignedTxBuilder)
 
