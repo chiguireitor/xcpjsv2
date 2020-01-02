@@ -74,7 +74,7 @@ class XCPJS {
 
     console.log("this is _envelopeAndBuild_ cs", coinSelect)
     console.log("pre opreturn params", msg, addrUtxoService, additionalOutputs, coinSelect)
-    let envelope = await this.envelopes.opreturn(msg, addrUtxoService, additionalOutputs, coinSelect)
+    let envelope = await this.envelopes.opreturn(msg, addrUtxoService, additionalOutputs, coinSelect, this.network)
     console.log('envelope',envelope)
     envelope.inputs = envelope.coinSelect.utxos
     console.log('envelope.inputs',envelope.inputs)

@@ -26,11 +26,11 @@ function op_push(len) {
   }
 }
 
-function createChangeOutput(change, addr) {
-  return xcputil.createValueOutput(addr, change)
+function createChangeOutput(change, addr, network) {
+  return xcputil.createValueOutput(addr, change, network)
 }
 
-module.exports = async (data, utxoService, additionalOutputs, cs) => {
+module.exports = async (data, utxoService, additionalOutputs, cs, network) => {
 
   //console.log("opreturn params", data, utxoService, additionalOutputs, cs)
 
@@ -84,7 +84,7 @@ module.exports = async (data, utxoService, additionalOutputs, cs) => {
   }
 
   if (coinSelect.change > 0) {
-    outputs.push(createChangeOutput(coinSelect.change, await utxoService.getChangeAddress()))
+    outputs.push(createChangeOutput(coinSelect.change, await utxoService.getChangeAddress(),network))
   }
 
   return { outputs, coinSelect: coinSelect }

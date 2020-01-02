@@ -90,9 +90,9 @@ function bn32be(bn) {
   return Buffer.from(res, 'hex')
 }
 
-function createValueOutput(addr, value) {
+function createValueOutput(addr, value, network) {
   let data = bitcoin.address.fromBase58Check(addr)
-  if(data.version == hn.pubKeyHash){
+  if(data.version == network.pubKeyHash){
     return {
       value: value,
       script: bitcoin.script.compile([
@@ -103,7 +103,7 @@ function createValueOutput(addr, value) {
         OPS.OP_CHECKSIG
       ])
     }
-  } else if (data.version == hn.scriptHash) {
+  } else if (data.version == network.scriptHash) {
     return {
       value: value,
       script: bitcoin.script.compile([
