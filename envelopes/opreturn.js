@@ -48,17 +48,17 @@ function op_push(len) {
   }
 }
 
-function createChangeOutput(change, addr) {
-  return xcputil.createValueOutput(addr, change)
+function createChangeOutput(change, addr, network) {
+  return xcputil.createValueOutput(addr, change, network)
 }
 
-module.exports = async (data, utxoService, additionalOutputs) => {
+module.exports = async (data, utxoService, additionalOutputs, network) => {
   let cryptData = data
   let additionalNeededValue = 0
-  let estimatedLength = cryptData.length + 3
+  let estimatedLength = cryptData.length + 3 + 120 /* one vin */
 
   if (additionalOutputs) {
-    estimatedLength += additionalOutputs.length * 32 + additionalOutputs.reduce((p,x) => p + x.value, 0)
+    estimatedLength += additionalOutputs.length * 60 + additionalOutputs.reduce((p,x) => p + x.value, 0)
   }
 
   let coinSelect = await utxoService.findUtxos({
@@ -93,7 +93,7 @@ module.exports = async (data, utxoService, additionalOutputs) => {
   }
 
   if (coinSelect.change > 0) {
-    outputs.push(createChangeOutput(coinSelect.change, await utxoService.getChangeAddress()))
+    outputs.push(createChangeOutput(coinSelect.change, await utxoService.getChangeAddress(), network))
   }
 
   return { outputs, inputs: coinSelect.utxos }

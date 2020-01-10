@@ -11,9 +11,9 @@ module.exports = {
     delete registeredSigners[addr]
   },
 
-  sign: async (src, tx) => {
+  sign: async (src, tx, inputs) => {
     if (src in registeredSigners) {
-      return await registeredSigners[src](tx)
+      return await registeredSigners[src](tx, inputs)
     } else {
       return tx
     }
@@ -36,5 +36,28 @@ module.exports = {
     }
 
     return address
+  },
+
+  wifKeyNP2PWKHSigner: (wif, networkName) => {
+    const network = bitcoin.networks[networkName]
+    const keyPair = bitcoin.ECPair.fromWIF(wif, network)
+    const p2sh = bitcoin.payments.p2sh({
+      redeem: bitcoin.payments.p2wpkh({ pubkey: keyPair.publicKey, network }),
+      network
+    })
+
+    registeredSigners[p2sh.address] = async (tx, inputs) => {
+      for (let i=0; i < tx.__inputs.length; i++) {
+        try {
+          tx.sign(i, keyPair, p2sh.redeem.output, null, inputs[i].value)
+        } catch(e) {
+          console.log(e)
+        }
+      }
+
+      return tx
+    }
+
+    return p2sh.address
   }
 }
