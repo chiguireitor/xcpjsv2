@@ -1,7 +1,7 @@
 const axios = require('axios')
 const crypto = require('crypto')
 
-const BYTES_PER_USED_UTXO = 40
+const BYTES_PER_USED_UTXO = 96
 
 function pickUtxosOldestFirst(utxos, len, feePerByte, additionalNeededValue) {
   let ordered = utxos.sort((a, b) => b.height - a.height)
@@ -38,7 +38,7 @@ function pickFromSet(ordered, len, feePerByte, additionalNeededValue) {
   while (ordered.length > 0 && feeSats > value) {
     let utxo = ordered.pop()
 
-    if (utxo.value > feePerByte * BYTES_PER_USED_UTXO && utxo.value > 5430 && ((utxo.coinbase == 0) || (utxo.coinbase == 1 && utxo.confirmations > 100))) {
+    if (utxo.value > feePerByte * BYTES_PER_USED_UTXO && utxo.value > 5430 && ((!utxo.coinbase) || (utxo.coinbase == 0) || (utxo.coinbase == 1 && utxo.confirmations > 100))) {
       picked.push(utxo)
       value += utxo.value
       feeSats += feePerByte * BYTES_PER_USED_UTXO
