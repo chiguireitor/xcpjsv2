@@ -66,5 +66,6 @@ function setBroadcastService(srv) {
 
 module.exports = {
   services, setNetwork, setUtxoService, setBroadcastService,
+  envelopeAndBuild: _envelopeAndBuild_,
   send, order, issuance, broadcast
 }
