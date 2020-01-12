@@ -76,12 +76,7 @@ function setStochasticPick(val) {
 }
 
 module.exports = {
-<<<<<<< HEAD
   services, setNetwork, setUtxoService, setBroadcastService, setStochasticPick,
-  send, order, issuance, broadcast, cancel
-=======
-  services, setNetwork, setUtxoService, setBroadcastService,
   envelopeAndBuild: _envelopeAndBuild_,
-  send, order, issuance, broadcast
->>>>>>> 64df8db85e6f247b7a0a54f6dbbeebd97d50d4ce
+  send, order, issuance, broadcast, cancel
 }
