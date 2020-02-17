@@ -26,7 +26,7 @@ module.exports = {
       descriptionBuff // {}p o {}s
     ])
 
-    if (msgData.length === 26 + descriptionBuff.length) {
+    if (msgData.length === 27 + descriptionBuff.length) {
       let result = { msgData }
 
       if (transferDestination) {
