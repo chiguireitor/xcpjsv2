@@ -15,25 +15,29 @@ module.exports = {
       descriptionBuff = Buffer.from(description, 'utf8')
     }
 
-    let result = {
-      msgData: Buffer.concat([
-        ID,
-        assetId, // Q
-        quantityBuff, // Q
-        xcputil.doByteBuffer(divisible?1:0), // ?
-        xcputil.doByteBuffer(0), // ?
-        xcputil.doIntBuffer(0), // I
-        xcputil.doFloatBuffer(0.0), // f
-        descriptionBuff // {}p o {}s
-      ])
-    }
+    let msgData = Buffer.concat([
+      ID,
+      assetId, // Q
+      quantityBuff, // Q
+      xcputil.doByteBuffer(divisible?1:0), // ?
+      xcputil.doByteBuffer(0), // ?
+      xcputil.doIntBuffer(0), // I
+      xcputil.doFloatBuffer(0.0), // f
+      descriptionBuff // {}p o {}s
+    ])
 
-    if (transferDestination) {
-      result.outputs = [
-        xcputil.createValueOutput(transferDestination, 5430, network)
-      ]
-    }
+    if (msgData.length === 26 + descriptionBuff.length) {
+      let result = { msgData }
 
-    return result
+      if (transferDestination) {
+        result.outputs = [
+          xcputil.createValueOutput(transferDestination, 5430, network)
+        ]
+      }
+
+      return result
+    } else {
+      return null
+    }
   }
 }
