@@ -7,6 +7,7 @@ const services = require('./services')
 let network = bitcoin.networks['mainnet']
 let utxoService, broadcastService
 let stochasticPick = false
+let currentTargetFeePerByte = 1
 
 async function send(source, destination, asset, quantity, memo, memoIsHex) {
   let msg = messages.send.compose(asset, destination, quantity, memo, memoIsHex)
@@ -33,14 +34,14 @@ async function cancel(source, offerHash) {
   return _envelopeAndBuild_(source, msg)
 }
 
-async function _envelopeAndBuild_(source, msg, targetFeePerByte) {
+async function _envelopeAndBuild_(source, msg) {
   let additionalOutputs = null
   if (typeof(msg) === 'object' && !Buffer.isBuffer(msg)) {
     additionalOutputs = msg.outputs
     msg = msg.msgData
   }
 
-  let addrUtxoService = utxoService.forAddress(source, { targetFeePerByte: targetFeePerByte || 1, stochasticPick })
+  let addrUtxoService = utxoService.forAddress(source, { targetFeePerByte: currentTargetFeePerByte, stochasticPick })
   let envelope = await envelopes.opreturn(msg, addrUtxoService, additionalOutputs, network)
 
   let unsignedTxBuilder = await services.transactionBuilder(network, envelope, additionalOutputs)
@@ -79,8 +80,13 @@ function setStochasticPick(val) {
   stochasticPick = val
 }
 
+function setCurrentTargetFeePerByte(n) {
+  currentTargetFeePerByte = n
+}
+
 module.exports = {
   services, setNetwork, setUtxoService, setBroadcastService, setStochasticPick,
+  setCurrentTargetFeePerByte,
   envelopeAndBuild: _envelopeAndBuild_,
   send, order, issuance, broadcast, cancel
 }
