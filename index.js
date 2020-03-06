@@ -60,7 +60,11 @@ async function _envelopeAndBuild_(source, msg) {
 }
 
 function setNetwork(name) {
-  network = bitcoin.networks[name]
+  if (typeof(name) === 'string') {
+    network = bitcoin.networks[name]
+  } else {
+    network = name
+  }
 }
 
 function setUtxoService(srv) {
