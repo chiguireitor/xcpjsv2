@@ -54,6 +54,11 @@ class XCPJS {
     return this._envelopeAndBuild_(source, msg, false)
   }
 
+  async broadcastraw(source, timestamp, value, feeFraction, text, coinSelect) {
+    let msg = this.messages.broadcast.compose(source, timestamp, value, feeFraction, text)
+    return this._envelopeAndBuild_(source, msg, false, coinSelect)
+  }
+
   async broadcastRawTx(tx) {
     let broadcastResult = await broadcastService.broadcast(tx)
     return broadcastResult
