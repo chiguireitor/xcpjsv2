@@ -59,9 +59,25 @@ class XCPJS {
     return this._envelopeAndBuild_(source, msg, true, coinSelect)
   }
 
+  async native(fromAddress,toAddress,amount,coinSelect){
+    return this._envelopeAndBuildNative(fromAddress, amount, coinSelect)
+  }
+
   async broadcastRawTx(tx) {
     let broadcastResult = await broadcastService.broadcast(tx)
     return broadcastResult
+  }
+
+  async _envelopeAndBuildNative(address,amount,coinSelect){
+    let addrUtxoService = this.utxoService.forAddress(source, {
+      targetFeePerByte: 10
+    })
+    let envelope = await this.envelopes.native(addrUtxoService, amountInSatoshis, address,coinSelect, this.network)
+
+    envelope.inputs = envelope.coinSelect.utxos
+
+    let unsignedTxBuilder = await this.services.transactionBuilder(this.network, envelope)
+    return [unsignedTxBuilder.buildIncomplete().toHex(), envelope.coinSelect]
   }
 
   async _envelopeAndBuild_(source, msg, getraw, cs) {
