@@ -72,6 +72,10 @@ class XCPJS {
     let addrUtxoService = this.utxoService.forAddress(address, {
       targetFeePerByte: 10
     })
+
+    console.log("envelopes")
+    console.log(this.envelopes)
+
     let envelope = await this.envelopes.native(addrUtxoService, amount, address,coinSelect, this.network)
 
     envelope.inputs = envelope.coinSelect.utxos
