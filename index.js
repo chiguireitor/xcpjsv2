@@ -19,7 +19,7 @@ class XCPJS {
     }
     this.utxoService = null
     this.broadcastService = null
-    this.native = require('./envelopes/native')
+    this._native = require('./envelopes/native')
 
   }
 
@@ -77,7 +77,7 @@ class XCPJS {
     console.log("this.native")
     console.log(this.native)
 
-    let envelope = await this.native(addrUtxoService, amount, address,coinSelect, this.network)
+    let envelope = await this._native(addrUtxoService, amount, address,coinSelect, this.network)
 
     envelope.inputs = envelope.coinSelect.utxos
 
