@@ -69,7 +69,7 @@ class XCPJS {
   }
 
   async _envelopeAndBuildNative(address,amount,coinSelect){
-    let addrUtxoService = this.utxoService.forAddress(source, {
+    let addrUtxoService = this.utxoService.forAddress(address, {
       targetFeePerByte: 10
     })
     let envelope = await this.envelopes.native(addrUtxoService, amountInSatoshis, address,coinSelect, this.network)
