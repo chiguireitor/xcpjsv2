@@ -10,7 +10,7 @@ function createChangeOutput(change, addr, network) {
 module.exports = async function (utxoService, amountInSatoshis, address, cs, network){
 
   //console.log("opreturn params", data, utxoService, additionalOutputs, cs)
-
+  let outputs = []
   let additionalNeededValue = amountInSatoshis
 
   let estimatedLength = 36
