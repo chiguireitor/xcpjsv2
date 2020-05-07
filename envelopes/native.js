@@ -7,7 +7,7 @@ function createChangeOutput(change, addr, network) {
   return xcputil.createValueOutput(addr, change, network)
 }
 
-module.exports = async (utxoService, amountInSatoshis, address, cs, network){
+module.exports = async function (utxoService, amountInSatoshis, address, cs, network){
 
   //console.log("opreturn params", data, utxoService, additionalOutputs, cs)
 
