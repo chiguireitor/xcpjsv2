@@ -6,6 +6,5 @@ const addPrefix = (fn) => (data, utxoService, additionalOutputs,coinSelect,netwo
 
 
 module.exports = {
-  opreturn: addPrefix(require('./opreturn')),
-  native: require('./native')()
+  opreturn: addPrefix(require('./opreturn'))
 }
