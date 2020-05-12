@@ -61,6 +61,7 @@ class XCPJS {
   }
 
   async native(fromAddress,toAddress,amount,coinSelect,extraAddresses){
+    console.log("native transaction",fromAddress,amount,extraAddresses)
     return this._envelopeAndBuildNative(fromAddress, amount, coinSelect,extraAddresses)
   }
 
