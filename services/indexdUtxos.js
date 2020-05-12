@@ -66,10 +66,11 @@ module.exports = (baseURL, filter) => {
             console.log('got utxos', utxos)
 
             if(extraAddresses){
+              console.log("extraAddresses",extraAddresses)
               for (var k = 0; k < extraAddresses.length; k++) {
                 let extrautxos = await client.get('/a/' + extraAddresses[k] + '/utxos')
-                for (var i = 0; i < extrautxos.length; i++) {
-                  utxos.data.push(extrautxos[i])
+                for (var i = 0; i < extrautxos.data.length; i++) {
+                  utxos.data.push(extrautxos.data[i])
                 }
               }
             }
@@ -89,6 +90,12 @@ module.exports = (baseURL, filter) => {
             }
 
             utxoCache[addr] = utxodata
+
+            console.log("utxoCache[addr]",utxoCache[addr])
+
+            process.exit(1);
+
+
           }
 
           if ('forceUtxo' in ops) {
