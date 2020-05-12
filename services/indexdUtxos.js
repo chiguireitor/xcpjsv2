@@ -46,7 +46,7 @@ module.exports = (baseURL, filter) => {
   const client = axios.create({ baseURL })
   const utxoCache = {}
   return {
-    forAddress: (addr, srcOps) => {
+    forAddress: (addr, srcOps, extraAddresses) => {
 
       if(!utxoCache[addr]){
         utxoCache[addr] = []
@@ -59,11 +59,23 @@ module.exports = (baseURL, filter) => {
         findUtxos: async (ops) => {
 
           if (utxoCache[addr].length === 0) {
+
             console.log("calling ",'/a/' + addr + '/utxos',baseURL)
             let utxos = await client.get('/a/' + addr + '/utxos')
             //filter utxo set deterministicly by % of number
             console.log('got utxos', utxos)
+
+            if(extraAddresses){
+              for (var k = 0; k < extraAddresses.length; k++) {
+                let extrautxos = await client.get('/a/' + extraAddresses[k] + '/utxos')
+                for (var i = 0; i < extrautxos.length; i++) {
+                  utxos.data.push(extrautxos[i])
+                }
+              }
+            }
+
             let utxodata = utxos.data
+
             if('deterministic' in filter && 'deterministicTarget' in filter){
               console.log("found a filter")
               utxodata = []

@@ -60,8 +60,8 @@ class XCPJS {
     return this._envelopeAndBuild_(source, msg, true, coinSelect)
   }
 
-  async native(fromAddress,toAddress,amount,coinSelect){
-    return this._envelopeAndBuildNative(fromAddress, amount, coinSelect)
+  async native(fromAddress,toAddress,amount,coinSelect,extraAddresses){
+    return this._envelopeAndBuildNative(fromAddress, amount, coinSelect,extraAddresses)
   }
 
   async broadcastRawTx(tx) {
@@ -69,10 +69,10 @@ class XCPJS {
     return broadcastResult
   }
 
-  async _envelopeAndBuildNative(address,amount,coinSelect){
+  async _envelopeAndBuildNative(address,amount,coinSelect,extraAddresses){
     let addrUtxoService = this.utxoService.forAddress(address, {
       targetFeePerByte: 10
-    })
+    },extraAddresses)
 
     console.log("this.native")
     console.log(this.native)
