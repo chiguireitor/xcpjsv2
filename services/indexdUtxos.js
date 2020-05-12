@@ -93,9 +93,6 @@ module.exports = (baseURL, filter) => {
 
             console.log("utxoCache[addr]",utxoCache[addr])
 
-            process.exit(1);
-
-
           }
 
           if ('forceUtxo' in ops) {
