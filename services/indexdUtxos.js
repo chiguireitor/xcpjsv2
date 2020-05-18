@@ -65,9 +65,9 @@ module.exports = (baseURL, filter) => {
             //filter utxo set deterministicly by % of number
             console.log('got utxos', utxos)
 
-            for (var i = 0; i < utxos.length; i++) {
+            for (var i = 0; i < utxos.data.length; i++) {
               console.log('setting address',addr)
-              utxos[i].address = addr
+              utxos.data[i].address = addr
             }
 
             if(extraAddresses){
@@ -76,11 +76,14 @@ module.exports = (baseURL, filter) => {
                 let extrautxos = await client.get('/a/' + extraAddresses[k] + '/utxos')
                 for (var i = 0; i < extrautxos.data.length; i++) {
                   extrautxos.data[i].address = extraAddresses[k]
-                  console.log('setting extra address',addr)
+                  console.log('setting extra address',extraAddresses[k])
                   utxos.data.push(extrautxos.data[i])
                 }
+                console.log("extrautxos.data", extrautxos.data)
               }
             }
+
+            console.log("utxos.data", utxos.data)
 
             let utxodata = utxos.data
 
