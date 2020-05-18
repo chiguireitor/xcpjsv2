@@ -66,6 +66,7 @@ module.exports = (baseURL, filter) => {
             console.log('got utxos', utxos)
 
             for (var i = 0; i < utxos.length; i++) {
+              console.log('setting address',addr)
               utxos[i].address = addr
             }
 
@@ -74,8 +75,9 @@ module.exports = (baseURL, filter) => {
               for (var k = 0; k < extraAddresses.length; k++) {
                 let extrautxos = await client.get('/a/' + extraAddresses[k] + '/utxos')
                 for (var i = 0; i < extrautxos.data.length; i++) {
+                  extrautxos.data[i].address = extraAddresses[k]
+                  console.log('setting extra address',addr)
                   utxos.data.push(extrautxos.data[i])
-                  utxos.data[i].address = extraAddresses[k]
                 }
               }
             }
