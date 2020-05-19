@@ -63,27 +63,19 @@ module.exports = (baseURL, filter) => {
             console.log("calling ",'/a/' + addr + '/utxos',baseURL)
             let utxos = await client.get('/a/' + addr + '/utxos')
             //filter utxo set deterministicly by % of number
-            console.log('got utxos', utxos)
-
             for (var i = 0; i < utxos.data.length; i++) {
-              console.log('setting address',addr)
               utxos.data[i].address = addr
             }
 
             if(extraAddresses){
-              console.log("extraAddresses",extraAddresses)
               for (var k = 0; k < extraAddresses.length; k++) {
                 let extrautxos = await client.get('/a/' + extraAddresses[k] + '/utxos')
                 for (var i = 0; i < extrautxos.data.length; i++) {
                   extrautxos.data[i].address = extraAddresses[k]
-                  console.log('setting extra address',extraAddresses[k])
                   utxos.data.push(extrautxos.data[i])
                 }
-                console.log("extrautxos.data", extrautxos.data)
               }
             }
-
-            console.log("utxos.data", utxos.data)
 
             let utxodata = utxos.data
 
@@ -100,8 +92,6 @@ module.exports = (baseURL, filter) => {
             }
 
             utxoCache[addr] = utxodata
-
-            console.log("utxoCache[addr]",utxoCache[addr])
 
           }
 
