@@ -16,7 +16,7 @@ async function pickRandomized(utxos, len, feePerByte, additionalNeededValue) {
         reject(err)
         return
       }
-      let p = buf.readUInt32LE()
+      let p = buf.readUInt32LE(0)
       let rnd = () => {
         let v = p & 3
         p = (p >>> 2) | (v << 30)
