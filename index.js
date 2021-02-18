@@ -73,7 +73,9 @@ function setUtxoService(srv) {
 }
 
 function setBroadcastService(srv) {
+  let old = broadcastService
   broadcastService = srv
+  return old
 }
 
 function setStochasticPick(val) {

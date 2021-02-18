@@ -1,6 +1,6 @@
 {
   "name": "xcpjsv2",
-  "version": "0.0.22",
+  "version": "0.0.23",
   "description": "Modern Counterparty XCP Javascript library",
   "main": "index.js",
   "scripts": {
@@ -12,7 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "arc4": "^3.4.0",
-    "axios": "^0.18.0",
+    "axios": "^0.21.1",
     "bignumber.js": "^8.1.1",
     "bitcoin-rpc-promise": "^2.1.6",
     "bitcoinjs-lib": "^4.0.3",
