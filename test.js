@@ -2,6 +2,12 @@ require('dotenv').config()
 const bitcoin = require('bitcoinjs-lib')
 const xcpjsv2 = require('./')
 
+const tx = "0200000001a40e3b6ea3c7d4fe6ec4761bba28567f98e6a8993cdf614583379f6e50851400010000006b483045022100862b279915aecff9575553f7a9af59192d0800a4a4ced4085067dde1458cdfd7022036d53fbd023899554be0eadb56b4bcb17d409775af4e0c1c4acebd99e0bbf9e501210387d6b0dbb9f13cca702baa237885aaf7b2e0143c5e180a4df5fa9e2e5eead265ffffffff020000000000000000686a4c651817be2cc39b4dec624b987e15a009b330f41ed33ba4001b301b0c07c6080536de198d81e92b3afcd92fe6abd0e9c96189300a212eb5b8026beb39e12174316150b911f46f2064c75e6b7276608144b2151139e879bf1f3c9dd29a0737bbaa7888382980448f2c0000000000001976a914f5aeeb5b076192f92a8a2d336d52173cf0636c7588ac00000000"
+
+function testDecode() {
+  console.log(xcpjsv2.decode(tx))
+}
+
 async function test() {
   xcpjsv2.setNetwork('regtest')
   xcpjsv2.setBroadcastService(xcpjsv2.services.transactionBroadcaster(process.env.BITCOIN_ENDPOINT))
@@ -30,4 +36,5 @@ async function test() {
   }
 }
 
-test()
+//test()
+testDecode()

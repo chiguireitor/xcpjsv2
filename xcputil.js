@@ -1,7 +1,55 @@
 const bitcoin = require('bitcoinjs-lib')
+const bs58 = require('bs58')
+const bs58check = require('bs58check')
 const OPS = require('bitcoin-ops')
 const BigNumber = require('bignumber.js')
 const B26_DIGITS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+const MAGIC_STRING = 'CNTRPRTY'
+const P2PKH_VERSIONBYTE = 0x6f /* 0x6f testnet, 0x00 mainnet */
+
+function reverse(a) {
+  let b = Buffer.alloc(a.length)
+  for (let i=0; i < a.length; i++) {
+    b[b.length - i -1] = a[i]
+  }
+
+  return b
+}
+
+// arc4: from https://github.com/visvirial/CounterJS
+const arc4 = function(key, data) {
+	if(typeof key == 'string') key = Buffer.from(key, 'hex');
+	if(typeof data == 'string') data = Buffer.from(data, 'hex');
+	var S = [];
+	for(var i=0; i<256; i++) {
+		S[i] = i;
+	}
+	for(var i=0,j=0; i<256; i++) {
+		j = (j + S[i] + key[i % key.length]) % 256;
+		[S[i], S[j]] = [S[j], S[i]];
+	}
+	var ret = [];
+	for(var x=0,i=0,j=0; x<data.length; x++) {
+		i = (i + 1) % 256;
+		j = (j + S[i]) % 256;
+		[S[i], S[j]] = [S[j], S[i]];
+		var K = S[(S[i] + S[j]) % 256];
+		ret.push(data[x] ^ K);
+	}
+	return Buffer.from(ret);
+};
+
+const idToAsset = (n) => {
+  if (n === 0n) return 'BTC'
+  if (n === 1n) return 'XCP'
+  let id = ''
+  while (n > 0) {
+    r = n % 26n
+    n = n / 26n
+    id = B26_DIGITS[parseInt(r)] + id
+  }
+  return id
+}
 
 function doByteBuffer(v) {
   let b = Buffer.alloc(1)
@@ -97,7 +145,27 @@ function createValueOutput(addr, value, network) {
   }
 }
 
+const depascalize = (b, force) => {
+  if (b.length - 1 <= 42 || force) {
+    b = b.slice(1)
+  }
+  return b
+}
+
+const makeAddress = (buf) => {
+  return bs58.encode(Buffer.concat([buf, bitcoin.crypto.hash256(buf).slice(0, 4)]))
+}
+
+const decodePubkeyToAddress = (pk) => {
+  let v = Buffer.from([P2PKH_VERSIONBYTE])
+  let h = bitcoin.crypto.hash160(pk)
+
+  return bs58check.encode(Buffer.concat([v, h]))
+}
+
 module.exports = {
+  MAGIC_STRING, P2PKH_VERSIONBYTE,
+
   bn32be,
   bn64be,
   intToHalf,
@@ -107,6 +175,12 @@ module.exports = {
   doFloatBuffer,
   doDoubleBuffer,
   createValueOutput,
+  reverse,
+  arc4,
+  idToAsset,
+  depascalize,
+  makeAddress,
+  decodePubkeyToAddress,
 
   addressShortDecode: (addr) => {
     let data = bitcoin.address.fromBase58Check(addr)
